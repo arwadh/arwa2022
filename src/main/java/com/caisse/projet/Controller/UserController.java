@@ -100,12 +100,12 @@ public class UserController {
                                                .build());
 	    }
 	 
-	/* @GetMapping("/users/resetPwd/{id}")
-	 public long reset(@PathVariable long id) {
+	 @GetMapping("/users/resetPwd/{id}")
+	 public String reset(@PathVariable long id) {
 	        Optional<User> user = userService.findById(id);
 	        return user.get().getReset();
 	       
-	    }*/
+	    }
 	 @RequestMapping(value="/authenticateC",method = RequestMethod.POST)
 	 public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest data) {
 			System.out.println("aaaa");
@@ -138,16 +138,19 @@ public class UserController {
 	 {
 		 System.out.println("Save user.............");
 	    User userr = new ObjectMapper().readValue(user, User.class);
-	    boolean isExit = new File(context.getRealPath("/Imagess/")).exists();
+	   userr.setReset(userr.getPassword());
+	   userr.setPassword(encoder.encode(userr.getPassword()));
+	  
+	    boolean isExit = new File(context.getRealPath("/ImgUsers/")).exists();
 	    if (!isExit)
 	    {
-	    	new File (context.getRealPath("/Imagess/")).mkdir();
+	    	new File (context.getRealPath("/ImageUsers/")).mkdir();
 	    	System.out.println("mk dir Imagess.............");
 	    }
 	    System.out.println("Save Article  22222.............");
 	    String filename = file.getOriginalFilename();
 	    String newFileName = FilenameUtils.getBaseName(filename)+"."+FilenameUtils.getExtension(filename);
-	    File serverFile = new File (context.getRealPath("/Imagess/"+File.separator+newFileName));
+	    File serverFile = new File (context.getRealPath("/ImgUsers/"+File.separator+newFileName));
 	    try
 	    {
 	    	System.out.println("Image");
@@ -157,9 +160,34 @@ public class UserController {
 	    	e.printStackTrace();
 	    }
 	    System.out.println("Save Article 333333.............");
-	    userr.setFileName(newFileName);
+	    userr.setFilename(newFileName);
+	   
+	    userr.setRole("Candidat");
 	    return userService.save(userr);
 	 }
+		@PostMapping("/u")
+		public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest signUpRequest) {
+			if (UserRepository.existsByUsername(signUpRequest.getUsername())) {
+				return ResponseEntity
+						.badRequest()
+						.body(new Message("Error: Username is already taken!"));
+			}
+
+			if (UserRepository.existsByEmail(signUpRequest.getEmail())) {
+				return ResponseEntity
+						.badRequest()
+						.body(new Message("Error: Email is already in use!"));
+			}
+
+			// Create new user's account
+			/*User user = new User(signUpRequest.getUsername(), 
+								 signUpRequest.getEmail(),
+								 encoder.encode(signUpRequest.getPassword()),
+										 signUpRequest.getRole()		 );*/
+			//UserRepository.save(user);
+
+			return ResponseEntity.ok(new Message("User registered successfully!"));
+		}	
 	 @PostMapping("/userss")
 		public ResponseEntity<?> registerUser(@RequestParam("file") MultipartFile file,
 				 @RequestParam("user") String user) throws JsonParseException , JsonMappingException , Exception{
@@ -177,16 +205,16 @@ public class UserController {
 			}
 
 			
-			    boolean isExit = new File(context.getRealPath("/Imagess/")).exists();
+			    boolean isExit = new File(context.getRealPath("/ImgUsers/")).exists();
 			    if (!isExit)
 			    {
-			    	new File (context.getRealPath("/Imagess/")).mkdir();
+			    	new File (context.getRealPath("/ImgUsers/")).mkdir();
 			    	System.out.println("mk dir Imagess.............");
 			    }
 			    System.out.println("Save Article  22222.............");
 			    String filename = file.getOriginalFilename();
 			    String newFileName = FilenameUtils.getBaseName(filename)+"."+FilenameUtils.getExtension(filename);
-			    File serverFile = new File (context.getRealPath("/Imagess/"+File.separator+newFileName));
+			    File serverFile = new File (context.getRealPath("/ImgUsers/"+File.separator+newFileName));
 			    try
 			    {
 			    	System.out.println("Image");
@@ -196,7 +224,7 @@ public class UserController {
 			    	e.printStackTrace();
 			    }
 			    System.out.println("Save Article 333333.............");
-			    userr.setFileName(newFileName);
+			    userr.setFilename(newFileName);
 			     userService.save(userr);
 
 			return ResponseEntity.ok(new Message("User registered successfully!"));
@@ -207,16 +235,18 @@ public class UserController {
 	 {
 		 System.out.println("Save user.............");
 	    User userr = new ObjectMapper().readValue(user, User.class);
-	    boolean isExit = new File(context.getRealPath("/Imagess/")).exists();
+	    userr.setReset(userr.getPassword());
+	    userr.setPassword(encoder.encode(userr.getPassword()));
+	    boolean isExit = new File(context.getRealPath("/ImgUsers/")).exists();
 	    if (!isExit)
 	    {
-	    	new File (context.getRealPath("/Imagess/")).mkdir();
+	    	new File (context.getRealPath("/ImgUsers/")).mkdir();
 	    	System.out.println("mk dir Imagess.............");
 	    }
 	    System.out.println("Save Article  22222.............");
 	    String filename = file.getOriginalFilename();
 	    String newFileName = FilenameUtils.getBaseName(filename)+"."+FilenameUtils.getExtension(filename);
-	    File serverFile = new File (context.getRealPath("/Imagess/"+File.separator+newFileName));
+	    File serverFile = new File (context.getRealPath("/ImgUsers/"+File.separator+newFileName));
 	    try
 	    {
 	    	System.out.println("Image");
@@ -226,7 +256,8 @@ public class UserController {
 	    	e.printStackTrace();
 	    }
 	    System.out.println("Save Article 333333.............");
-	    userr.setFileName(newFileName);
+	    userr.setFilename(newFileName);
+	    userr.setRole("Recruteur");
 	    return userService.save(userr);
 	 }
 	 
@@ -235,7 +266,7 @@ public class UserController {
 	        return userService.save(User);
 	    }
 
-	 @PutMapping("/users/{id}")
+	/* @PutMapping("/users/{id}")
 	    public void update(@PathVariable long id, @RequestBody User User) {
 	        Optional<User> user = userService.findById(id);
 	        if (user.isPresent()) {
@@ -243,16 +274,69 @@ public class UserController {
 	        } else {
 	            userService.save(User);
 	        }
-	    }
+	    }*/
+		 @PutMapping("/users/{id}")
+		    public void update(@PathVariable long id,@RequestParam("file") MultipartFile file,
+					 @RequestParam("user") String user) throws JsonParseException , JsonMappingException , Exception {
+		     User userr = new ObjectMapper().readValue(user, User.class);
+		        	deleteUserImage(userr);
+		        	 String filename = file.getOriginalFilename();
+		     	    String newFileName = FilenameUtils.getBaseName(filename)+"."+FilenameUtils.getExtension(filename);
+		     	    userr.setFilename(newFileName);
+		            userService.update(id, userr);
+		           
+		            addUserImage(file);
+		       
+		    }
+		 private void addUserImage(MultipartFile file)
+		    {
+		    	boolean isExit = new File(context.getRealPath("/ImgUsers/")).exists();
+			    if (!isExit)
+			    {
+			    	new File (context.getRealPath("/ImgUsers/")).mkdir();
+			    	System.out.println("mk dir Imagess.............");
+			    }
+			    String filename = file.getOriginalFilename();
+			    String newFileName = FilenameUtils.getBaseName(filename)+"."+FilenameUtils.getExtension(filename);
+			    File serverFile = new File (context.getRealPath("/ImgUsers/"+File.separator+newFileName));
+			    try
+			    {
+			    
+			    	 FileUtils.writeByteArrayToFile(serverFile,file.getBytes());
+			    	 
+			    }catch(Exception e) {
+			    	 System.out.println("Failed to Add Image User !!");
+			    }
+			    
+		    	
+		    }
+		 private void deleteUserImage(User user)
+		    {
+		    	System.out.println( " Delete User Image");
+		         try { 
+		        	 File file = new File (context.getRealPath("/ImgUsers/"+user.getFilename()));
+		        		System.out.println(file);
+		             System.out.println(user.getFilename());
+		              if(file.delete()) { 
+		                System.out.println(file.getName() + " is deleted!");
+		             } else {
+		                System.out.println("Delete operation is failed.");
+		                }
+		          }
+		            catch(Exception e)
+		            {
+		                System.out.println("Failed to Delete image !!");
+		            }
+		    }
 
 	    @DeleteMapping("/users/{id}")
 	    public void delete(@PathVariable long id) {
 	        userService.delete(id);
 	    }
 	     
-	    @GetMapping(path="/Imgusers/{id}")
+	    @GetMapping(path="/ImgUsers/{id}")
 		 public byte[] getPhoto(@PathVariable("id") Long id) throws Exception{
 			 User User   =userService.findById(id).get();
-			 return Files.readAllBytes(Paths.get(context.getRealPath("/Imagess/")+User.getFileName()));
+			 return Files.readAllBytes(Paths.get(context.getRealPath("/ImgUsers/")+User.getFilename()));
 		 }
 }

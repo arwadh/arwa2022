@@ -1,25 +1,30 @@
 package com.caisse.projet.Model;
 
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+@Getter
+@Setter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 @Table(name = "Utilisateur",
 uniqueConstraints = { 
 		@UniqueConstraint(columnNames = "username"
@@ -27,6 +32,12 @@ uniqueConstraints = {
 		@UniqueConstraint(columnNames = "email") 
 	})
 public class User {
+	public String getFilename() {
+		return filename;
+	}
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
 	@Id
 	  @GeneratedValue(strategy = GenerationType.AUTO)
 	  private long id;
@@ -42,7 +53,7 @@ public class User {
 	  private String password;
 	  private String reset=null;
 	  private String role;
-	  private String fileName;
+	  private String filename;
 	  private String  hometown;
 	  private String  interests;
 	  private String  experience;
@@ -57,7 +68,11 @@ public class User {
 	  private String  reason;
 	  private String  currentLocation;
 	  private String industry;
-	  
+		@JsonIgnore
+		@ManyToMany()
+		private Set<Job> jobs;
+	
+		
 	  
 	public long getId() {
 		return id;
@@ -102,12 +117,7 @@ public class User {
 	public void setRole(String role) {
 		this.role = role;
 	}
-	public String getFileName() {
-		return fileName;
-	}
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
+
 	
 
 }
