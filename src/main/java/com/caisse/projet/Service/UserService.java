@@ -2,6 +2,7 @@ package com.caisse.projet.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -9,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.caisse.projet.Model.Job;
 import com.caisse.projet.Model.User;
+import com.caisse.projet.Repository.JobRepository;
 import com.caisse.projet.Repository.UserRepository;
 
 
@@ -18,6 +21,8 @@ import com.caisse.projet.Repository.UserRepository;
 public class UserService {
 	 @Autowired
 		UserRepository repository;
+	 @Autowired
+		JobRepository repo;
 	 
 		public List<User> getAll() {
 			System.out.println("Get all Users 11111...");
@@ -25,7 +30,10 @@ public class UserService {
 	    }
 		
 	
-		
+		  public List<Job> getappliedJobs(long iduser) {
+		    	User u =repository.findById(iduser).orElse(null);
+		    			return u.getJobs();
+		    }
 		
 		public List<User> getAllByEmail(String email) {
 			System.out.println("Get all Users 11111...");
@@ -65,6 +73,6 @@ public class UserService {
 	        Optional<User> user = repository.findById(id);
 	        user.ifPresent(repository::delete);
 	    }
-		
+
 
 }

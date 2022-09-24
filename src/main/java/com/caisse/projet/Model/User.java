@@ -1,5 +1,6 @@
 package com.caisse.projet.Model;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -70,7 +71,7 @@ public class User {
 	  private String industry;
 		@JsonIgnore
 		@ManyToMany()
-		private Set<Job> jobs;
+		private List<Job> jobs;
 	
 		
 	  

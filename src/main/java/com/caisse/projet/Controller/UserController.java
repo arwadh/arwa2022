@@ -3,7 +3,7 @@ package com.caisse.projet.Controller;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
-
+import java.util.Set;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -37,8 +37,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.caisse.projet.Model.Job;
 import com.caisse.projet.Model.User;
 import com.caisse.projet.Repository.UserRepository;
+import com.caisse.projet.Service.JobService;
 import com.caisse.projet.Service.UserDetailsImpl;
 import com.caisse.projet.Service.UserService;
 import com.caisse.projet.config.JwtTokenUtil;
@@ -54,6 +56,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class UserController {
 	 @Autowired
 	 private UserService userService;
+	 @Autowired
+	 private JobService service;
 	 @Autowired  
 	 ServletContext context;
 	 @Autowired 
@@ -339,4 +343,5 @@ public class UserController {
 			 User User   =userService.findById(id).get();
 			 return Files.readAllBytes(Paths.get(context.getRealPath("/ImgUsers/")+User.getFilename()));
 		 }
+	
 }
