@@ -69,6 +69,7 @@ public class User {
 	  private String  reason;
 	  private String  currentLocation;
 	  private String industry;
+	  private String companyName;
 		@JsonIgnore
 		@ManyToMany()
 		private List<Job> jobs;

@@ -240,6 +240,7 @@ public class UserController {
 		 System.out.println("Save user.............");
 	    User userr = new ObjectMapper().readValue(user, User.class);
 	    userr.setReset(userr.getPassword());
+	    
 	    userr.setPassword(encoder.encode(userr.getPassword()));
 	    boolean isExit = new File(context.getRealPath("/ImgUsers/")).exists();
 	    if (!isExit)
