@@ -240,6 +240,7 @@ public class UserController {
 		 System.out.println("Save user.............");
 	    User userr = new ObjectMapper().readValue(user, User.class);
 	    userr.setReset(userr.getPassword());
+	    userr.setRole("Recruiter");
 	    
 	    userr.setPassword(encoder.encode(userr.getPassword()));
 	    boolean isExit = new File(context.getRealPath("/ImgUsers/")).exists();
@@ -335,7 +336,7 @@ public class UserController {
 		    }
 
 	    @DeleteMapping("/users/{id}")
-	    public void delete(@PathVariable long id) {
+	    public void delete(@PathVariable ("id") long id) {
 	        userService.delete(id);
 	    }
 	     
@@ -344,5 +345,9 @@ public class UserController {
 			 User User   =userService.findById(id).get();
 			 return Files.readAllBytes(Paths.get(context.getRealPath("/ImgUsers/")+User.getFilename()));
 		 }
-	
+
+	    @GetMapping("/job/jobs/getUserByjob2/{iduser}")
+	    public List<User> getallUsersByJobsApplied(@PathVariable("iduser") long id) {
+	    	return UserRepository.getUsersAppliedByCompany(id);
+	    }
 }
