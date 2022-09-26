@@ -89,7 +89,9 @@ public class CvService {
 	    	 repository.save(cv);}
 	          
 			}
-			
+			  public Optional<Cv> findById(long id) {
+			        return repository.findById(id);
+			    }
 			
 			public List<Long> getall(){
 				return repository.getall();

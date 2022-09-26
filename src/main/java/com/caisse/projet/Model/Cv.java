@@ -36,6 +36,7 @@ private String intersts;
 private String companyName;
 private String job;
 private String name;
+private Double similarity;
 @JsonIgnore
 @OneToOne()
 private User user;

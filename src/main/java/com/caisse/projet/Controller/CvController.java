@@ -3,6 +3,7 @@ package com.caisse.projet.Controller;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,7 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.caisse.projet.Model.Cv;
 import com.caisse.projet.Model.Job;
 import com.caisse.projet.Model.User;
+import com.caisse.projet.Repository.CvRepository;
 import com.caisse.projet.Service.CvService;
+import com.caisse.projet.Service.WordNet;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +32,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class CvController {
 	@Autowired
 	CvService service;
+	@Autowired
+	CvRepository repo;
+	@Autowired
+	WordNet wordnet;
 	 @GetMapping("/cv/7")
 	 public  int getCode() {
 	 	 System.out.println("Get Numbers...");
@@ -73,4 +80,13 @@ public class CvController {
 		
 		  //service.savee(cvv,id);
 	   }
+		 @GetMapping("/cv/liste/{id}")
+	public  double test(@PathVariable("id") long id,@RequestParam("word1") List<String> word1, @RequestParam("word2") List<String>word2) {
+			 Cv cv=repo.findById(id).get();
+			
+			 Double s=wordnet.test(word1, word2);
+			// double d=(double)Math.round(s * 100.0d) / 100.0d;
+			 cv.setSimilarity(s);
+		return s;
+	}
 }

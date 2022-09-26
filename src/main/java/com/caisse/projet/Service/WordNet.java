@@ -16,7 +16,7 @@ import edu.cmu.lti.ws4j.impl.WuPalmer;
 import edu.cmu.lti.ws4j.util.WS4JConfiguration;
 
 
-
+@Service
 public class WordNet {
 
 	private static ILexicalDatabase db = new NictWordNet();
@@ -33,7 +33,7 @@ public class WordNet {
 	}
 
 	public static void main(String[] args) {
-	String[] words = {"add", "get", "filter", "remove", "check", "find", "collect", "create"};
+	String[] words = {"add", "get", "filter", "remove", "check", "find", "collect", "add"};
 
 	for(int i=0; i<words.length-1; i++){
 	for(int j=i+1; j<words.length; j++){
@@ -44,15 +44,27 @@ public class WordNet {
 	
 	}
 	}
-	public void test(List<String> word1,List<String>word2) {
-		String[] words = {"add", "get", "filter", "remove", "check", "find", "collect", "create"};
-		//List<String> word1 = new ArrayList<String>();
-		//List<String> word2 = new ArrayList<String>();
+	public double test(List<String> word1,List<String>word2) {
+		
+		List<Double> list=new ArrayList<Double>();
+		//Double d=0.0;
 		for(int i=0; i<word1.size(); i++){
-		for(int j=i+1; j<word2.size(); j++){
-		double distance = compute(words[i], words[j]);
-		System.out.println(words[i] +"–"  +  words[j] + "= " + distance);
+		for(int j=0; j<word2.size(); j++){
+		double distance = compute(word1.get(i), word2.get(j));
+		
+		System.out.println(word1.get(i) +"–"  +  word2.get(j) + "= " + distance);
+		//double d=(double)Math.round(distance * 100.0) / 100.0;
+		//d+=distance;
+		//System.out.println("la somme est" +d);
+		list.add(distance);
+		
+		
 		}}
+		System.out.println(list);
+		 int sum = list.stream().mapToInt(Double::intValue).sum();
+		 System.out.println(sum);
+		return sum;
+		
 	}
 	}
 	
