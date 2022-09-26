@@ -3,6 +3,7 @@ package com.caisse.projet.Controller;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class CvController {
 	@Autowired
 	CvService service;
-	@Autowired
-	CvRepository repo;
+
 	@Autowired
 	WordNet wordnet;
 	 @GetMapping("/cv/7")
@@ -81,12 +81,12 @@ public class CvController {
 		  //service.savee(cvv,id);
 	   }
 		 @GetMapping("/cv/liste/{id}")
-	public  double test(@PathVariable("id") long id,@RequestParam("word1") List<String> word1, @RequestParam("word2") List<String>word2) {
-			 Cv cv=repo.findById(id).get();
+	public   Map<String, Double> test(@PathVariable("id") long id,@RequestParam("word1") List<String> word1, @RequestParam("word2") List<String>word2) {
 			
-			 Double s=wordnet.test(word1, word2);
+			 //Double s=wordnet.test(word1, word2);
 			// double d=(double)Math.round(s * 100.0d) / 100.0d;
-			 cv.setSimilarity(s);
-		return s;
+			 
+		//return s;
+			return  wordnet.test(id,word1, word2);
 	}
 }
